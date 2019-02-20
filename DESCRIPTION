@@ -1,32 +1,33 @@
 Package: FebuxostatVsAllopurinolCVD
 Type: Package
-Title: A Package Skeleton for Comparative Effectiveness Studies
+Title: A Package for Comparative Effectiveness Studies between Febuxostat and Allopurinol
 Version: 0.0.1
-Author: Seng Chan You [aut, cre]
-Maintainer: Seng Chan You <applegna@gmail.com>
-Description: The comparing Sudden cardiac death, cardiovascular disease and gout flare risk between febuxostat and allopurinol in patients with gout.
+Author: Seng Chan You  [aut, cre]
+Maintainer: Seng Chan You  <applegna@gmail.com>
+Description: A package compare cardiovacsular outcome between febuxostat and allopurinol
 Depends:
-    DatabaseConnector
+    DatabaseConnector (>= 2.2.0)
 Imports:
     SqlRender,
     EmpiricalCalibration,
     Cyclops,
     FeatureExtraction,
-    CohortMethod,
+    CohortMethod (>= 3.0.2),
     ggplot2,
     ff,
     ffbase,
-    MethodEvaluation,
-    EvidenceSynthesis,
+    MethodEvaluation (>= 0.3.1),
     OhdsiSharing,
-    zip,
-    OhdsiRTools (>= 1.5.0)
+	  ParallelLogger,
+	  survival,
+	  plyr
 Suggests:
     knitr,
     rmarkdown,
     DT,
-    shiny
+    shiny,
+    OhdsiRTools
 License: Apache License 2.0
 VignetteBuilder: knitr
 LazyData: TRUE
-RoxygenNote: 6.0.1.9000
+RoxygenNote: 6.1.0

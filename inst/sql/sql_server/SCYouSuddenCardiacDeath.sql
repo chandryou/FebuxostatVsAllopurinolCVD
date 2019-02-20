@@ -7,14 +7,25 @@ CREATE TABLE #Codesets (
 INSERT INTO #Codesets (codeset_id, concept_id)
 SELECT 0 as codeset_id, c.concept_id FROM (select distinct I.concept_id FROM
 ( 
-  select concept_id from @vocabulary_database_schema.CONCEPT where concept_id in (141651,46273453,443754,45765791)and invalid_reason is null
+  select concept_id from @vocabulary_database_schema.CONCEPT where concept_id in (4111700,321042,4317150)and invalid_reason is null
 UNION  select c.concept_id
   from @vocabulary_database_schema.CONCEPT c
   join @vocabulary_database_schema.CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
-  and ca.ancestor_concept_id in (141651,46273453,443754,45765791)
+  and ca.ancestor_concept_id in (4111700,321042,4317150)
   and c.invalid_reason is null
 
 ) I
+LEFT JOIN
+(
+  select concept_id from @vocabulary_database_schema.CONCEPT where concept_id in (46274066,46269812,46269805,43530960,4306984,4173792,37017187,4301015,4311273,4309332,44784368,4173446,4148028,4122762,4110550,4106274,4041343,317669)and invalid_reason is null
+UNION  select c.concept_id
+  from @vocabulary_database_schema.CONCEPT c
+  join @vocabulary_database_schema.CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
+  and ca.ancestor_concept_id in (46274066,46269812,46269805,43530960,4306984,4173792,37017187,4301015,4311273,4309332,44784368,4148028,4122762,4110550,4106274,4041343,317669)
+  and c.invalid_reason is null
+
+) E ON I.concept_id = E.concept_id
+WHERE E.concept_id is null
 ) C;
 
 
@@ -35,8 +46,8 @@ FROM
   FROM @cdm_database_schema.CONDITION_OCCURRENCE co
   JOIN #Codesets codesets on ((co.condition_concept_id = codesets.concept_id and codesets.codeset_id = 0))
 ) C
-
-
+JOIN @cdm_database_schema.VISIT_OCCURRENCE V on C.visit_occurrence_id = V.visit_occurrence_id and C.person_id = V.person_id
+WHERE V.visit_concept_id in (9203,262,9201)
 -- End Condition Occurrence Criteria
 
   ) E
@@ -86,21 +97,14 @@ FROM cteIncludedEvents Results
 WHERE Results.ordinal = 1
 ;
 
--- date offset strategy
-
-select event_id, person_id, 
-  case when DATEADD(day,0,start_date) > start_date then DATEADD(day,0,start_date) else start_date end as end_date
-INTO #strategy_ends
-from #included_events;
 
 
 -- generate cohort periods into #final_cohort
 with cohort_ends (event_id, person_id, end_date) as
 (
 	-- cohort exit dates
-  -- End Date Strategy
-SELECT event_id, person_id, end_date from #strategy_ends
-
+  -- By default, cohort exit at the event's op end date
+select event_id, person_id, op_end_date as end_date from #included_events
 ),
 first_ends (person_id, start_date, end_date) as
 (
@@ -299,8 +303,6 @@ DROP TABLE #best_events;
 
 }
 
-TRUNCATE TABLE #strategy_ends;
-DROP TABLE #strategy_ends;
 
 
 TRUNCATE TABLE #cohort_rows;

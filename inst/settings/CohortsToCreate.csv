@@ -1,11 +1,10 @@
-cohortId,atlasId,name
-863,863,FebuxostatGeneral
-864,864,AllopurinolGeneral
-756,756,CVDInpatient
-20,20,death
-60,60,AcuteMIinpatient
-763,763,StrokeInpatient
-736,736,AllopurinolHypersensitivity
-824,824,SCD
-586,586,HeartFailure
-862,862,GoutFlare
+atlasId,atlasName,cohortId,name
+863,SCYou(T)Febuxostat_general_revised,863,SCYouTFebuxostat_general_revised
+864,SCYou(C)Allopurinol_general_revised,864,SCYouCAllopurinol_general_revised
+736,AllopurinolHypersensitivity,736,AllopurinolHypersensitivity
+1263,SCYou: Heart failure (inpatient or ED) and first event,1263,SCYou_Heart_failure_inpatient_or_ED_and_first_event
+20,SCYou:(outcome)any death,20,SCYououtcomeany_death
+824,SCYou:SuddenCardiacDeath,824,SCYouSuddenCardiacDeath
+1261,SCYou: Acute MI (inpatient or ED) and first event,1261,SCYou_Acute_MI_inpatient_or_ED_and_first_event
+1235,SCYou: hemorrhagic stroke (inpatient or ED) and first event,1235,SCYou_hemorrhagic_stroke_inpatient_or_ED_and_first_event
+1233,SCYou: ischemic stroke (inpatient or ED) and first event,1233,SCYou_ischemic_stroke_inpatient_or_ED_and_first_event

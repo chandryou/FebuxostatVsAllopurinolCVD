@@ -22,7 +22,6 @@
 #' The \code{createCohorts}, \code{synthesizePositiveControls}, \code{runAnalyses}, and \code{runDiagnostics} arguments
 #' are intended to be used to run parts of the full study at a time, but none of the parts are considerd to be optional.
 #'
-#' @param country              Country Name (Currently only 'Europe', 'US', 'Taiwan', 'Japan', and 'Korea' are availble)
 #' @param connectionDetails    An object of type \code{connectionDetails} as created using the
 #'                             \code{\link[DatabaseConnector]{createConnectionDetails}} function in the
 #'                             DatabaseConnector package.
@@ -40,6 +39,11 @@
 #' @param outputFolder         Name of local folder to place results; make sure to use forward slashes
 #'                             (/). Do not use a folder on a network drive since this greatly impacts
 #'                             performance.
+#' @param databaseId           A short string for identifying the database (e.g.
+#'                             'Synpuf').
+#' @param databaseName         The full name of the database (e.g. 'Medicare Claims
+#'                             Synthetic Public Use Files (SynPUFs)').
+#' @param databaseDescription  A short description (several sentences) of the database.
 #' @param createCohorts        Create the cohortTable table with the exposure and outcome cohorts?
 #' @param synthesizePositiveControls  Should positive controls be synthesized?
 #' @param runAnalyses          Perform the cohort method analyses?
@@ -67,13 +71,15 @@
 #' }
 #'
 #' @export
-execute <- function(country = 'Korea',
-                    connectionDetails,
+execute <- function(connectionDetails,
                     cdmDatabaseSchema,
                     cohortDatabaseSchema = cdmDatabaseSchema,
                     cohortTable = "cohort",
                     oracleTempSchema = cohortDatabaseSchema,
                     outputFolder,
+                    databaseId = "Unknown",
+                    databaseName = "Unknown",
+                    databaseDescription = "Unknown",
                     createCohorts = TRUE,
                     synthesizePositiveControls = TRUE,
                     runAnalyses = TRUE,
@@ -81,18 +87,17 @@ execute <- function(country = 'Korea',
                     packageResults = TRUE,
                     maxCores = 4,
                     minCellCount= 5) {
-  if (!(country %in% c('Europe', 'US', 'Taiwan', 'Japan', 'Korea'))) {
-    print("Currently only 'Europe', 'US', 'Taiwan', 'Japan', and 'Korea' are availble")
-    stop()
-  }
-
   if (!file.exists(outputFolder))
     dir.create(outputFolder, recursive = TRUE)
-
-  OhdsiRTools::addDefaultFileLogger(file.path(outputFolder, "log.txt"))
-
+  if (!is.null(getOption("fftempdir")) && !file.exists(getOption("fftempdir"))) {
+    warning("fftempdir '", getOption("fftempdir"), "' not found. Attempting to create folder")
+    dir.create(getOption("fftempdir"), recursive = TRUE)
+  }
+  
+  ParallelLogger::addDefaultFileLogger(file.path(outputFolder, "log.txt"))
+  
   if (createCohorts) {
-    OhdsiRTools::logInfo("Creating exposure and outcome cohorts")
+    ParallelLogger::logInfo("Creating exposure and outcome cohorts")
     createCohorts(connectionDetails = connectionDetails,
                   cdmDatabaseSchema = cdmDatabaseSchema,
                   cohortDatabaseSchema = cohortDatabaseSchema,
@@ -101,60 +106,47 @@ execute <- function(country = 'Korea',
                   outputFolder = outputFolder)
   }
   
-  if (synthesizePositiveControls) {
-    OhdsiRTools::logInfo("Synthesizing positive controls")
-    synthesizePositiveControls(connectionDetails = connectionDetails,
-                               cdmDatabaseSchema = cdmDatabaseSchema,
-                               cohortDatabaseSchema = cohortDatabaseSchema,
-                               cohortTable = cohortTable,
-                               oracleTempSchema = oracleTempSchema,
-                               outputFolder = outputFolder,
-                               maxCores = maxCores)
+  # Set doPositiveControlSynthesis to FALSE if you don't want to use synthetic positive controls:
+  doPositiveControlSynthesis = FALSE
+  if (doPositiveControlSynthesis) {
+    if (synthesizePositiveControls) {
+      ParallelLogger::logInfo("Synthesizing positive controls")
+      synthesizePositiveControls(connectionDetails = connectionDetails,
+                                 cdmDatabaseSchema = cdmDatabaseSchema,
+                                 cohortDatabaseSchema = cohortDatabaseSchema,
+                                 cohortTable = cohortTable,
+                                 oracleTempSchema = oracleTempSchema,
+                                 outputFolder = outputFolder,
+                                 maxCores = maxCores)
+    }
   }
   
   if (runAnalyses) {
-    OhdsiRTools::logInfo("Running analyses")
-    cmOutputFolder <- file.path(outputFolder, "cmOutput")
-    if (!file.exists(cmOutputFolder))
-      dir.create(cmOutputFolder)
-    cmAnalysisListFile <- system.file("settings",
-                                      switch(country, "Europe"="cmAnalysisListEurope.json", "US"="cmAnalysisListUS.json", "Japan"= "cmAnalysisListJapan.json",  "Taiwan"= "cmAnalysisListTaiwan.json","Korea" = "cmAnalysisListKorea.json"),
-                                      package = "FebuxostatVsAllopurinolCVD")
-    cmAnalysisList <- CohortMethod::loadCmAnalysisList(cmAnalysisListFile)
-    dcosList <- createTcos(outputFolder = outputFolder)
-    results <- CohortMethod::runCmAnalyses(connectionDetails = connectionDetails,
-                                           cdmDatabaseSchema = cdmDatabaseSchema,
-                                           exposureDatabaseSchema = cohortDatabaseSchema,
-                                           exposureTable = cohortTable,
-                                           outcomeDatabaseSchema = cohortDatabaseSchema,
-                                           outcomeTable = cohortTable,
-                                           outputFolder = cmOutputFolder,
-                                           oracleTempSchema = oracleTempSchema,
-                                           cmAnalysisList = cmAnalysisList,
-                                           drugComparatorOutcomesList = dcosList,
-                                           getDbCohortMethodDataThreads = min(3, maxCores),
-                                           createStudyPopThreads = min(3, maxCores),
-                                           createPsThreads = max(1, round(maxCores/10)),
-                                           psCvThreads = min(10, maxCores),
-                                           computeCovarBalThreads = min(3, maxCores),
-                                           trimMatchStratifyThreads = min(10, maxCores),
-                                           fitOutcomeModelThreads = max(1, round(maxCores/4)),
-                                           outcomeCvThreads = min(4, maxCores),
-                                           refitPsForEveryOutcome = FALSE)
-  }
-  if (runDiagnostics) {
-    OhdsiRTools::logInfo("Running diagnostics")
-    generateDiagnostics(outputFolder = outputFolder, country=country)
-  }
-  if (packageResults) {
-    OhdsiRTools::logInfo("Packaging results")
-    packageResults(connectionDetails = connectionDetails,
-                   cdmDatabaseSchema = cdmDatabaseSchema,
-                   outputFolder = outputFolder,
-                   minCellCount = minCellCount,
-                   country = country)
+    ParallelLogger::logInfo("Running CohortMethod analyses")
+    runCohortMethod(connectionDetails = connectionDetails,
+                    cdmDatabaseSchema = cdmDatabaseSchema,
+                    cohortDatabaseSchema = cohortDatabaseSchema,
+                    cohortTable = cohortTable,
+                    oracleTempSchema = oracleTempSchema,
+                    outputFolder = outputFolder,
+                    maxCores = maxCores)
   }
   
+  if (runDiagnostics) {
+    ParallelLogger::logInfo("Running diagnostics")
+    generateDiagnostics(outputFolder = outputFolder,
+                        maxCores = maxCores)
+  }
+  
+  if (packageResults) {
+    ParallelLogger::logInfo("Packaging results")
+    exportResults(outputFolder = outputFolder,
+                  databaseId = databaseId,
+                  databaseName = databaseName,
+                  databaseDescription = databaseDescription,
+                  minCellCount = minCellCount,
+                  maxCores = maxCores)
+  }
   
   invisible(NULL)
 }
