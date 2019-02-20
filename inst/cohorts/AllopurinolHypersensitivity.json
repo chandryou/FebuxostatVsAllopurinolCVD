@@ -1,1 +1,116 @@
-{"ConceptSets":[{"id":0,"name":"SJS+TEN+DRESS","expression":{"items":[{"concept":{"CONCEPT_CLASS_ID":"Clinical Finding","CONCEPT_CODE":"73442001","CONCEPT_ID":141651,"CONCEPT_NAME":"Stevens-Johnson syndrome","DOMAIN_ID":"Condition","INVALID_REASON":"V","INVALID_REASON_CAPTION":"Valid","STANDARD_CONCEPT":"S","STANDARD_CONCEPT_CAPTION":"Standard","VOCABULARY_ID":"SNOMED"},"includeDescendants":true},{"concept":{"CONCEPT_CLASS_ID":"Clinical Finding","CONCEPT_CODE":"124911000119100","CONCEPT_ID":46273453,"CONCEPT_NAME":"Stevens Johnson syndrome AND toxic epidermal necrolysis overlap","DOMAIN_ID":"Condition","INVALID_REASON":"V","INVALID_REASON_CAPTION":"Valid","STANDARD_CONCEPT":"S","STANDARD_CONCEPT_CAPTION":"Standard","VOCABULARY_ID":"SNOMED"},"includeDescendants":true},{"concept":{"CONCEPT_CLASS_ID":"Clinical Finding","CONCEPT_CODE":"23067006","CONCEPT_ID":443754,"CONCEPT_NAME":"Lyell's toxic epidermal necrolysis, subepidermal type","DOMAIN_ID":"Condition","INVALID_REASON":"V","INVALID_REASON_CAPTION":"Valid","STANDARD_CONCEPT":"S","STANDARD_CONCEPT_CAPTION":"Standard","VOCABULARY_ID":"SNOMED"},"includeDescendants":true},{"concept":{"CONCEPT_CLASS_ID":"Clinical Finding","CONCEPT_CODE":"702809001","CONCEPT_ID":45765791,"CONCEPT_NAME":"Drug reaction with eosinophilia and systemic symptoms","DOMAIN_ID":"Condition","INVALID_REASON":"V","INVALID_REASON_CAPTION":"Valid","STANDARD_CONCEPT":"S","STANDARD_CONCEPT_CAPTION":"Standard","VOCABULARY_ID":"SNOMED"},"includeDescendants":true}]}}],"PrimaryCriteria":{"CriteriaList":[{"ConditionOccurrence":{"CodesetId":0}}],"ObservationWindow":{"PriorDays":0,"PostDays":0},"PrimaryCriteriaLimit":{"Type":"First"}},"QualifiedLimit":{"Type":"First"},"ExpressionLimit":{"Type":"First"},"InclusionRules":[],"EndStrategy":{"DateOffset":{"DateField":"StartDate","Offset":0}},"CensoringCriteria":[],"CollapseSettings":{"CollapseType":"ERA","EraPad":0},"CensorWindow":{}}
+{
+  "ExpressionLimit": {"Type": "First"},
+  "CollapseSettings": {
+    "CollapseType": "ERA",
+    "EraPad": 0
+  },
+  "CensorWindow": {
+    "StartDate": null,
+    "EndDate": null
+  },
+  "ConceptSets": [{
+    "expression": {"items": [
+      {
+        "isExcluded": false,
+        "concept": {
+          "INVALID_REASON_CAPTION": "Valid",
+          "CONCEPT_ID": 141651,
+          "STANDARD_CONCEPT": "S",
+          "CONCEPT_CODE": "73442001",
+          "VOCABULARY_ID": "SNOMED",
+          "CONCEPT_NAME": "Stevens-Johnson syndrome",
+          "DOMAIN_ID": "Condition",
+          "STANDARD_CONCEPT_CAPTION": "Standard",
+          "CONCEPT_CLASS_ID": "Clinical Finding",
+          "INVALID_REASON": "V"
+        },
+        "includeMapped": false,
+        "includeDescendants": true
+      },
+      {
+        "isExcluded": false,
+        "concept": {
+          "INVALID_REASON_CAPTION": "Valid",
+          "CONCEPT_ID": 46273453,
+          "STANDARD_CONCEPT": "S",
+          "CONCEPT_CODE": "124911000119100",
+          "VOCABULARY_ID": "SNOMED",
+          "CONCEPT_NAME": "Stevens Johnson syndrome AND toxic epidermal necrolysis overlap",
+          "DOMAIN_ID": "Condition",
+          "STANDARD_CONCEPT_CAPTION": "Standard",
+          "CONCEPT_CLASS_ID": "Clinical Finding",
+          "INVALID_REASON": "V"
+        },
+        "includeMapped": false,
+        "includeDescendants": true
+      },
+      {
+        "isExcluded": false,
+        "concept": {
+          "INVALID_REASON_CAPTION": "Valid",
+          "CONCEPT_ID": 443754,
+          "STANDARD_CONCEPT": "S",
+          "CONCEPT_CODE": "23067006",
+          "VOCABULARY_ID": "SNOMED",
+          "CONCEPT_NAME": "Lyell's toxic epidermal necrolysis, subepidermal type",
+          "DOMAIN_ID": "Condition",
+          "STANDARD_CONCEPT_CAPTION": "Standard",
+          "CONCEPT_CLASS_ID": "Clinical Finding",
+          "INVALID_REASON": "V"
+        },
+        "includeMapped": false,
+        "includeDescendants": true
+      },
+      {
+        "isExcluded": false,
+        "concept": {
+          "INVALID_REASON_CAPTION": "Valid",
+          "CONCEPT_ID": 45765791,
+          "STANDARD_CONCEPT": "S",
+          "CONCEPT_CODE": "702809001",
+          "VOCABULARY_ID": "SNOMED",
+          "CONCEPT_NAME": "Drug reaction with eosinophilia and systemic symptoms",
+          "DOMAIN_ID": "Condition",
+          "STANDARD_CONCEPT_CAPTION": "Standard",
+          "CONCEPT_CLASS_ID": "Clinical Finding",
+          "INVALID_REASON": "V"
+        },
+        "includeMapped": false,
+        "includeDescendants": true
+      }
+    ]},
+    "name": "SJS+TEN+DRESS",
+    "id": 0
+  }],
+  "EndStrategy": {"DateOffset": {
+    "DateField": "StartDate",
+    "Offset": 0
+  }},
+  "CensoringCriteria": [],
+  "Title": null,
+  "AdditionalCriteria": null,
+  "QualifiedLimit": {"Type": "First"},
+  "InclusionRules": [],
+  "PrimaryCriteria": {
+    "CriteriaList": [{"ConditionOccurrence": {
+      "OccurrenceEndDate": null,
+      "CorrelatedCriteria": null,
+      "ConditionTypeExclude": false,
+      "CodesetId": 0,
+      "ProviderSpecialty": null,
+      "Gender": null,
+      "VisitType": null,
+      "First": null,
+      "OccurrenceStartDate": null,
+      "ConditionType": null,
+      "ConditionSourceConcept": null,
+      "StopReason": null,
+      "Age": null
+    }}],
+    "PrimaryCriteriaLimit": {"Type": "First"},
+    "ObservationWindow": {
+      "PostDays": 0,
+      "PriorDays": 0
+    }
+  }
+}
