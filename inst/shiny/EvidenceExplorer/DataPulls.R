@@ -69,8 +69,7 @@ getOutcomes <- function(connection) {
   return(outcomes)
 }
 
-ge
-nalyses <- function(connection) {
+getAnalyses <- function(connection) {
   sql <- "SELECT analysis_id, description FROM cohort_method_analysis"
   sql <- SqlRender::translateSql(sql, targetDialect = connection@dbms)$sql
   analyses <- querySql(connection, sql)
