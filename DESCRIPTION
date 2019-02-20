@@ -1,10 +1,10 @@
 Package: FebuxostatVsAllopurinolCVD
 Type: Package
-Title: A Package for Comparative Effectiveness Studies between Febuxostat and Allopurinol
+Title: A Package for Comparative Effectiveness Studies of febuxostat and allopurinol
 Version: 0.0.1
-Author: Seng Chan You  [aut, cre]
-Maintainer: Seng Chan You  <applegna@gmail.com>
-Description: A package compare cardiovacsular outcome between febuxostat and allopurinol
+Author: Seng Chan You [aut, cre]
+Maintainer: Seng Chan You <applegna@gmail.com>
+Description: A package to evaluate the cardiovascular risk between febuxostat and allopurinol
 Depends:
     DatabaseConnector (>= 2.2.0)
 Imports:
