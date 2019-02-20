@@ -1,6 +1,6 @@
 Package: FebuxostatVsAllopurinolCVD
 Type: Package
-Title: A Package for Comparative Effectiveness Studies of febuxostat and allopurinol
+Title: A limited version of the package for Comparative Effectiveness Studies of febuxostat and allopurinol
 Version: 0.0.1
 Author: Seng Chan You [aut, cre]
 Maintainer: Seng Chan You <applegna@gmail.com>
