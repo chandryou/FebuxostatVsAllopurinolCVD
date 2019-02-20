@@ -33,13 +33,13 @@ getIndications <- function(connection) {
 }
 
 getSubgroups <- function(connection) {
-  sql <- "SELECT DISTINCT interaction_covariate_id AS subgroup_id, covariate_name AS subgroup_name 
-    FROM (
-      SELECT DISTINCT interaction_covariate_id
-      FROM cm_interaction_result
-    ) ids
-    INNER JOIN covariate
-    ON interaction_covariate_id = covariate_id"
+  sql <- "SELECT DISTINCT interaction_covariate_id AS subgroup_id, covariate_name AS subgroup_name
+  FROM (
+    SELECT DISTINCT interaction_covariate_id
+    FROM cm_interaction_result
+  ) ids
+  INNER JOIN covariate
+  ON interaction_covariate_id = covariate_id"
   sql <- SqlRender::translateSql(sql, targetDialect = connection@dbms)$sql
   subgroups <- querySql(connection, sql)
   colnames(subgroups) <- SqlRender::snakeCaseToCamelCase(colnames(subgroups))
@@ -50,8 +50,8 @@ getSubgroups <- function(connection) {
 
 getExposures <- function(connection) {
   sql <- "SELECT * FROM (
-    SELECT exposure_id, exposure_name, indication_id FROM single_exposure_of_interest
-    UNION ALL SELECT exposure_id, exposure_name, indication_id FROM combi_exposure_of_interest
+  SELECT exposure_id, exposure_name, indication_id FROM single_exposure_of_interest
+  UNION ALL SELECT exposure_id, exposure_name, indication_id FROM combi_exposure_of_interest
   ) exposure
   INNER JOIN exposure_group
   ON exposure.exposure_id = exposure_group.exposure_id;"
@@ -69,7 +69,8 @@ getOutcomes <- function(connection) {
   return(outcomes)
 }
 
-getAnalyses <- function(connection) {
+ge
+nalyses <- function(connection) {
   sql <- "SELECT analysis_id, description FROM cohort_method_analysis"
   sql <- SqlRender::translateSql(sql, targetDialect = connection@dbms)$sql
   analyses <- querySql(connection, sql)
@@ -92,19 +93,20 @@ getDatabaseDetails <- function(connection, databaseId) {
   databaseDetails <- querySql(connection, sql)
   colnames(databaseDetails) <- SqlRender::snakeCaseToCamelCase(colnames(databaseDetails))
   databaseDetails$description <- sub("\\n", " ", databaseDetails$description)
-  databaseDetails$description <- sub("JDMC", "JMDC", databaseDetails$description) # TODO Fix in schema
+  databaseDetails$description <- sub("JDMC",
+                                     "JMDC",
+                                     databaseDetails$description)  # TODO Fix in schema
   return(databaseDetails)
 }
 
-getIndicationForExposure <- function(connection,
-                                     exposureIds = c()) {
-  sql <- "SELECT exposure_id, indication_id FROM single_exposure_of_interest WHERE"  
+getIndicationForExposure <- function(connection, exposureIds = c()) {
+  sql <- "SELECT exposure_id, indication_id FROM single_exposure_of_interest WHERE"
   sql <- paste(sql, paste0("exposure_id IN (", paste(exposureIds, collapse = ", "), ")"))
-  
+
   sql <- SqlRender::translateSql(sql, targetDialect = connection@dbms)$sql
   indications <- querySql(connection, sql)
   colnames(indications) <- SqlRender::snakeCaseToCamelCase(colnames(indications))
-  return(indications)  
+  return(indications)
 }
 
 getTcoDbs <- function(connection,
@@ -172,7 +174,7 @@ getMainResults <- function(connection,
                            analysisIds = c()) {
   idx <- rep(TRUE, nrow(cohortMethodResult))
   if (length(targetIds) != 0) {
-     idx <- idx & cohortMethodResult$targetId %in% targetIds
+    idx <- idx & cohortMethodResult$targetId %in% targetIds
   }
   if (length(comparatorIds) != 0) {
     idx <- idx & cohortMethodResult$comparatorId %in% comparatorIds
@@ -240,10 +242,9 @@ getSubgroupResults <- function(connection,
 }
 
 getControlResults <- function(connection, targetId, comparatorId, analysisId, databaseId) {
-  results <- cohortMethodResult[cohortMethodResult$targetId == targetId &
-                                  cohortMethodResult$comparatorId == comparatorId &
-                                  cohortMethodResult$analysisId == analysisId &
-                                  cohortMethodResult$databaseId == databaseId, ]
+  results <- cohortMethodResult[cohortMethodResult$targetId == targetId & cohortMethodResult$comparatorId ==
+    comparatorId & cohortMethodResult$analysisId == analysisId & cohortMethodResult$databaseId ==
+    databaseId, ]
   results$effectSize <- NA
   idx <- results$outcomeId %in% negativeControlOutcome$outcomeId
   results$effectSize[idx] <- 1
@@ -262,11 +263,9 @@ getCmFollowUpDist <- function(connection,
                               outcomeId,
                               databaseId,
                               analysisId) {
-  followUpDist <- cmFollowUpDist[cmFollowUpDist$targetId == targetId &
-                                 cmFollowUpDist$comparatorId == comparatorId &
-                                 cmFollowUpDist$outcomeId == outcomeId &
-                                 cmFollowUpDist$analysisId == analysisId &
-                                 cmFollowUpDist$databaseId == databaseId, ]
+  followUpDist <- cmFollowUpDist[cmFollowUpDist$targetId == targetId & cmFollowUpDist$comparatorId ==
+    comparatorId & cmFollowUpDist$outcomeId == outcomeId & cmFollowUpDist$analysisId == analysisId &
+    cmFollowUpDist$databaseId == databaseId, ]
   return(followUpDist)
 }
 
@@ -280,16 +279,18 @@ getCovariateBalance <- function(connection,
   balance <- readRDS(file.path(dataFolder, file))
   colnames(balance) <- SqlRender::snakeCaseToCamelCase(colnames(balance))
   balance <- balance[balance$analysisId == analysisId & balance$outcomeId == outcomeId, ]
-  balance <- merge(balance, covariate[covariate$databaseId == databaseId, c("covariateId", "covariateAnalysisId", "covariateName")])
-  balance <- balance[ c("covariateId",
-                        "covariateName",
-                        "covariateAnalysisId", 
-                        "targetMeanBefore", 
-                        "comparatorMeanBefore", 
-                        "stdDiffBefore", 
-                        "targetMeanAfter", 
-                        "comparatorMeanAfter",
-                        "stdDiffAfter")]
+  balance <- merge(balance,
+                   covariate[covariate$databaseId == databaseId,
+                   c("covariateId", "covariateAnalysisId", "covariateName")])
+  balance <- balance[c("covariateId",
+                       "covariateName",
+                       "covariateAnalysisId",
+                       "targetMeanBefore",
+                       "comparatorMeanBefore",
+                       "stdDiffBefore",
+                       "targetMeanAfter",
+                       "comparatorMeanAfter",
+                       "stdDiffAfter")]
   colnames(balance) <- c("covariateId",
                          "covariateName",
                          "analysisId",
@@ -315,25 +316,27 @@ getKaplanMeier <- function(connection, targetId, comparatorId, outcomeId, databa
   file <- sprintf("kaplan_meier_dist_t%s_c%s_%s.rds", targetId, comparatorId, databaseId)
   km <- readRDS(file.path(dataFolder, file))
   colnames(km) <- SqlRender::snakeCaseToCamelCase(colnames(km))
-  km <- km[km$outcomeId == outcomeId &
-             km$analysisId == analysisId, ]
-  
+  km <- km[km$outcomeId == outcomeId & km$analysisId == analysisId, ]
+
   return(km)
 }
 
-getAttrition <- function(connection, targetId, comparatorId, outcomeId, analysisId, databaseId) {
-  result <- attrition[attrition$targetId == targetId &
-                        attrition$comparatorId == comparatorId &
-                        attrition$outcomeId == outcomeId &
-                        attrition$analysisId == analysisId &
-                        attrition$databaseId == databaseId, ]
-  targetAttrition <- result[result$exposureId == targetId, ]
+ge
+ttrition <- function(connection, targetId, comparatorId, outcomeId, analysisId, databaseId) {
+  result <- attrition[attrition$targetId == targetId & attrition$comparatorId == comparatorId & attrition$outcomeId ==
+    outcomeId & attrition$analysisId == analysisId & attrition$databaseId == databaseId, ]
+  targe
+ttrition <- result[result$exposureId == targetId, ]
   comparatorAttrition <- result[result$exposureId == comparatorId, ]
-  colnames(targetAttrition)[colnames(targetAttrition) == "subjects"] <- "targetPersons"
-  targetAttrition$exposureId <- NULL
+  colnames(targe
+ttrition)[colnames(targe
+ttrition) == "subjects"] <- "targetPersons"
+  targe
+ttrition$exposureId <- NULL
   colnames(comparatorAttrition)[colnames(comparatorAttrition) == "subjects"] <- "comparatorPersons"
   comparatorAttrition$exposureId <- NULL
-  result <- merge(targetAttrition, comparatorAttrition)
+  result <- merge(targe
+ttrition, comparatorAttrition)
   result <- result[order(result$sequenceNumber), ]
   return(result)
 }
