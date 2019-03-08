@@ -8890,7 +8890,7 @@
       "addExposureDaysToEnd": false,
       "priorOutcomeLookback": 99999,
       "removeSubjectsWithPriorOutcome": false,
-      "riskWindowEnd": 0,
+      "riskWindowEnd": 9999,
       "firstExposureOnly": false
     },
     "description": "ITT PS matching",
