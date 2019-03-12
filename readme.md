@@ -30,56 +30,69 @@ How to run
 	```
 
 	If you experience problems on Windows where rJava can't find Java, one solution may be to add `args = "--no-multiarch"` to each `install_github` call, for example:
-	
+
 	```r
 	install_github("ohdsi/SqlRender", args = "--no-multiarch")
 	```
-	
-	Alternatively, ensure that you have installed both 32-bit and 64-bit JDK versions, as mentioned in the [video tutorial](https://youtu.be/K9_0s2Rchbo).
-	
+
+	Or, ensure that you have installed both 32-bit and 64-bit JDK versions, as mentioned in the [video tutorial](https://youtu.be/K9_0s2Rchbo).
+
 2. In 'R', use the following code to install the FebuxostatVsAllopurinolCVD package:
 
   To do: Need to provide some instructions for installing the study package itself.
-	
-3. Once installed, you can execute the study by modifying and using the following code:
-	
+
+
+3. Alternatively,	you can pull docker image for FebuxostatVsAllopurinolCVD
+		In the 'shell', use following code to pull docker image for FebuxostatVsAllopurinolCVD
+		```
+		docker run --name plp -e USER=user -e PASSWORD=password1 -d -p 8787:8787 chandryou/febuxostatvsallopurinolcvd
+		```
+		Then in the 'browser' activate Rstudio with following address
+
+		```
+		http://localhost:8787
+		```
+		The ID and PW are user and password1 as set above.
+
+4. Once installed, you can execute the study by modifying and using the following code:
+
 	```r
 	library(FebuxostatVsAllopurinolCVD)
-	
+
 	# Optional: specify where the temporary files (used by the ff package) will be created:
 	options(fftempdir = "c:/FFtemp")
-	
+
 	# Maximum number of cores to be used:
 	maxCores <- parallel::detectCores()
-	
+
 	# Minimum cell count when exporting data:
 	minCellCount <- 5
-	
+
 	# The folder where the study intermediate and result files will be written:
 	outputFolder <- "c:/FebuxostatVsAllopurinolCVD"
-	
+
 	# Details for connecting to the server:
 	# See ?DatabaseConnector::createConnectionDetails for help
 	connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = "postgresql",
 									server = "some.server.com/ohdsi",
 									user = "joe",
 									password = "secret")
-	
+
 	# The name of the database schema where the CDM data can be found:
 	cdmDatabaseSchema <- "cdm_synpuf"
-	
+
 	# The name of the database schema and table where the study-specific cohorts will be instantiated:
 	cohortDatabaseSchema <- "scratch.dbo"
 	cohortTable <- "my_study_cohorts"
-	
+
 	# Some meta-information that will be used by the export function:
 	databaseId <- "Synpuf"
 	databaseName <- "Medicare Claims Synthetic Public Use Files (SynPUFs)"
 	databaseDescription <- "Medicare Claims Synthetic Public Use Files (SynPUFs) were created to allow interested parties to gain familiarity using Medicare claims data while protecting beneficiary privacy. These files are intended to promote development of software and applications that utilize files in this format, train researchers on the use and complexities of Centers for Medicare and Medicaid Services (CMS) claims, and support safe data mining innovations. The SynPUFs were created by combining randomized information from multiple unique beneficiaries and changing variable values. This randomization and combining of beneficiary information ensures privacy of health information."
-	
+
 	# For Oracle: define a schema that can be used to emulate temp tables:
 	oracleTempSchema <- NULL
-	
+
 	execute(connectionDetails = connectionDetails,
 		cdmDatabaseSchema = cdmDatabaseSchema,
 		cohortDatabaseSchema = cohortDatabaseSchema,
@@ -98,21 +111,21 @@ How to run
 		minCellCount = minCellCount)
 	```
 
-4. Upload the file ```export/Results<DatabaseId>.zip``` in the output folder to the study coordinator:
+5. Upload the file ```export/Results<DatabaseId>.zip``` in the output folder to the study coordinator:
 
 	```r
 	submitResults("export/Results<DatabaseId>.zip", key = "<key>", secret = "<secret>")
 	```
-	
+
 	Where ```key``` and ```secret``` are the credentials provided to you personally by the study coordinator.
-		
-5. To view the results, use the Shiny app:
+
+6. To view the results, use the Shiny app:
 
 	```r
 	prepareForEvidenceExplorer("Result<databaseId>.zip", "/shinyData")
 	launchEvidenceExplorer("/shinyData", blind = TRUE)
 	```
-  
+
   Note that you can save plots from within the Shiny app. It is possible to view results from more than one database by applying `prepareForEvidenceExplorer` to the Results file from each database, and using the same data folder. Set `blind = FALSE` if you wish to be unblinded to the final results.
 
 
