@@ -42,20 +42,19 @@ How to run
   To do: Need to provide some instructions for installing the study package itself.
 
 
-3. Alternatively,	you can pull docker image for FebuxostatVsAllopurinolCVD
-		In the 'shell', use following code to pull docker image for FebuxostatVsAllopurinolCVD
+3. Alternatively,	you can pull docker image for FebuxostatVsAllopurinolCVD. In the 'shell', use following code to pull docker image for FebuxostatVsAllopurinolCVD
+
+	```console
+	$docker run --name plp -e USER=user -e PASSWORD=password1 -d -p 8787:8787 chandryou/febuxostatvsallopurinolcvd
+	```
+
+	Then in the 'browser' activate Rstudio with following address
 
 
-			docker run --name plp -e USER=user -e PASSWORD=password1 -d -p 8787:8787 chandryou/febuxostatvsallopurinolcvd
+	http://localhost:8787
 
 
-		Then in the 'browser' activate Rstudio with following address
-
-
-			http://localhost:8787
-
-
-		The ID and PW are user and password1 as set above.
+	The ID and PW are user and password1 as set above.
 
 4. Once installed, you can execute the study by modifying and using the following code:
 
