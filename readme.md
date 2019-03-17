@@ -101,14 +101,14 @@ How to run
 		cohortTable = cohortTable,
 		oracleTempSchema = oracleTempSchema,
 		outputFolder = outputFolder,
-		databaseId = databaseId
+		databaseId = databaseId,
 		databaseName = databaseName,
 		databaseDescription = databaseDescription,
 		createCohorts = TRUE,
 		synthesizePositiveControls = TRUE,
 		runAnalyses = TRUE,
 		runDiagnostics = TRUE,
-		packageResults = TRUE
+		packageResults = TRUE,
 		maxCores = maxCores,
 		minCellCount = minCellCount)
 	```
